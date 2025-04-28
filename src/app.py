@@ -5,8 +5,9 @@ from src.controler.colaborador_controller import bp_colaborador
 from src.model import db
 from config import Config
 
+
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__) #-- INSTANCIA DO FLASK
     app.register_blueprint(bp_colaborador)
 
     app.config.from_object(Config)
@@ -15,5 +16,6 @@ def create_app():
 
     with app.app_context(): # Se as tabelas não existem, crie
         db.create_all()
+
     return app
 
