@@ -8,14 +8,14 @@ from src.security.security import hash_senha, checar_senha
 
 bp_colaborador = Blueprint('colaborador', __name__, url_prefix='/colaborador')
 
-# dados = [
-#     {'id': 1,'nome': 'Karynne Moreira', 'cargo': 'CEO', 'cracha': '010101'},
-#     {'id': 2,'nome': 'Samuel Silverio', 'cargo': 'CTO', 'cracha': '74512'},
-#     {'id': 3,'nome': 'Thales Reis', 'cargo': 'Desenvolvedor Back-end Java', 'cracha': '14523'},
-#     {'id': 4,'nome': 'Eduardo Gomes', 'cargo': 'DevOps', 'cracha': '78412'},
-#     {'id': 5,'nome': 'Gabriel Silvano', 'cargo': 'Desenvolvedor Front-end React', 'cracha': '96523'},
-#     {'id': 6,'nome': 'Suelen Braga', 'cargo': 'Infra', 'cracha': '251473'}
-# ]
+dados = [
+    {'id': 1,'nome': 'Karynne Moreira', 'cargo': 'CEO', 'cracha': '010101'},
+    {'id': 2,'nome': 'Samuel Silverio', 'cargo': 'CTO', 'cracha': '74512'},
+    {'id': 3,'nome': 'Thales Reis', 'cargo': 'Desenvolvedor Back-end Java', 'cracha': '14523'},
+    {'id': 4,'nome': 'Eduardo Gomes', 'cargo': 'DevOps', 'cracha': '78412'},
+    {'id': 5,'nome': 'Gabriel Silvano', 'cargo': 'Desenvolvedor Front-end React', 'cracha': '96523'},
+    {'id': 6,'nome': 'Suelen Braga', 'cargo': 'Infra', 'cracha': '251473'}
+ ]
 
 @bp_colaborador.route('/todos-colaboradores')
 def pegar_dados_todos_colaboradores():
@@ -61,6 +61,7 @@ def atualizar_dados_do_colaborador(id_colaborador):
 
     if 'nome' in dados_requisicao:
         colaborador_encontrado['nome'] = dados_requisicao['nome']
+    
     if 'cargo' in dados_requisicao:
         colaborador_encontrado['cargo'] = dados_requisicao['cargo']
 
@@ -80,7 +81,7 @@ def login():
         #SELECT * FROM [TABELA]]
     colaborador = db.session.execute(
         db.select(Colaborador).where(Colaborador.email == email)
-    ).scalar #-> A linha de informação ou NONE
+    ).scalar() #-> A linha de informação ou NONE
         
     print('*'*100)
     print(f'dado: {colaborador} é do tipo {type(colaborador)}')
