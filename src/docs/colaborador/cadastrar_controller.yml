@@ -1,0 +1,40 @@
+tags:
+    - Colaborador
+description: Endpoint para cadastrar um novo colaborador
+
+parameters:
+    - in: body
+      name: corpo
+      required: true
+
+      schema:
+        type: object
+        properties:
+            nome:
+                type: string
+                example: Gabriel Silvano Vieira
+            email:
+                type: string
+                example: gabriel@email.com
+            senha:
+                type: string
+                example: 12345678
+            cargo:
+                type: string
+                example: QA
+            salario:
+                type: number
+                example: 5000.00
+        required:
+            - nome
+            - email
+            - senha
+            - cargo
+            - salario
+responses:
+            201:
+                description: Colaborador cadastrado com sucesso
+            400:
+                example: Erro ao cadastrar colaborador. Verifique os dados informados.
+            401:
+                example: Erro de autenticação. Verifique suas credenciais.    
