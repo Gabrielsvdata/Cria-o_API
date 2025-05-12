@@ -40,7 +40,7 @@ def cadastrar_novo_colaborador():
     db.session.commit() # EXECUTA A QUERY
 
     return jsonify ({'mensagem': 'Dado cadastrado com sucesso'}), 201
-    
+
 @bp_colaborador.route('/atualizar/<int:id_colaborador>', methods=['PUT'])
 def atualizar_dados_do_colaborador(id_colaborador):
     
@@ -83,11 +83,6 @@ def login():
         return jsonify({'mensagem': 'Usuario não encontrado'}), 404
     
     colaborador = colaborador.to_dict()
-
-     
-    #print('*'*100)
-    #print(f'dado: {colaborador} é do tipo {type(colaborador)}')
-    #print('*'*100)
 
     if email == colaborador.get('email') and checar_senha(senha, colaborador.get('senha')):
         return jsonify({'mensagem': "Login realizado com sucesso"}),200
