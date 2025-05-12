@@ -1,51 +1,83 @@
 from src.model import db
 from sqlalchemy.schema import Column
-from sqlalchemy.types import Integer, String, DECIMAL, DATE
+from sqlalchemy.types import Integer, String, DECIMAL, TIMESTAMP
 from sqlalchemy import func
 from sqlalchemy import ForeignKey
 class Reembolso(db.Model):
+    __tablename__ = 'reembolso'
 
-
-#------------------------------------ATRIBUTOS-------------------------------
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    # id = Column(Integer, primary_key=True, autoincrement=True)
     colaborador = Column(String(150), nullable=False)
-    empresa = Column(String(50), nullable=False) # abreviações
-    num_prestacao = Column(Integer, nullable=False)
+    empresa = Column(String(50), nullable=False)
+    num_prestacao = Column(Integer, primary_key=True, autoincrement=True)
     descricao = Column(String(255))
-    data = Column(DATE, server_default=func.current_date(), nullable=False)
+    data = Column(TIMESTAMP, server_default=func.current_timestamp(), nullable=False)
     tipo_reembolso = Column(String(35), nullable=False)
     centro_custo = Column(String(50), nullable=False)
-
     ordem_interna = Column(String(50))
     divisao = Column(String(50))
     pep = Column(String(50))
     moeda = Column(String(20), nullable=False)
     distanca_km = Column(String(50))
     valor_km = Column(String(50))
-    valor_faturado = Column(DECIMAL(10,2), nullable=False) # <-- 123456789,12
-    despesa = Column(DECIMAL(10,2))
-    id_colaborador = Column(Integer, ForeignKey(column='colaborador.id'))
-    status = Column(String(25))
+    valor_faturado = Column(DECIMAL(10, 2), nullable=False)
+    despesa = Column(DECIMAL(10, 2))
+    id_colaborador = Column(Integer, ForeignKey('colaborador.id'))
+    status = Column(String(25), default='Em análise')
 
+    def __init__(self,
+                 colaborador,
+                 empresa,
+                 descricao='',
+                 tipo_reembolso=None,
+                 centro_custo=None,
+                 ordem_interna=None,
+                 divisao=None,
+                 pep=None,
+                 moeda='BRL',
+                 distancia_km=None,
+                 valor_km=None,
+                 valor_faturado=0,
+                 despesa=0,
+                 id_colaborador=None,
+                 status='Em análise'):
+        self.colaborador     = colaborador
+        self.empresa         = empresa
+        self.descricao       = descricao
+        self.tipo_reembolso  = tipo_reembolso
+        self.centro_custo    = centro_custo
+        self.ordem_interna   = ordem_interna
+        self.divisao         = divisao
+        self.pep             = pep
+        self.moeda           = moeda
+        self.distanca_km     = distancia_km
+        self.valor_km        = valor_km
+        self.valor_faturado  = valor_faturado
+        self.despesa         = despesa
+        self.id_colaborador  = id_colaborador
+        self.status          = status
 
-    def __init__(self, id, colaborador, empresa, numprestacao, descricao, data, tipo_reembolso, centro_custo, ordem_interna, divisao, pep, moeda, distancia_km, valor_km, valor_faturado, despesa, id_colaborador, status='Em análise'):
-        self.colaborador = colaborador
-        self.empresa = empresa
-        self.num_prestacao = numprestacao
-        self.descricao = descricao
-        self.data = data 
-        self.tipo_reembolso = tipo_reembolso
-        self.centro_custo = centro_custo
-        self.ordem_interna = ordem_interna
-        self.divisao = divisao
-        self.pep = pep
-        self.moeda = moeda
-        self.distanca_km = distancia_km
-        self.valor_km = valor_km
-        self.valor_faturado = valor_faturado
-        self.despesa = despesa
-        self.id_colaborador = id_colaborador
-        self.status = status
-
-
+ # ---------------------------- MÉTODO to_dict ----------------------------
+    def to_dict(self):
+        """
+        Converte o objeto Reembolso em um dicionário JSON.
+        """
+        return {
+            "num_prestacao": self.num_prestacao,
+            "colaborador": self.colaborador,
+            "empresa": self.empresa,
+            "descricao": self.descricao,
+            "data": str(self.data),  # Convertendo data para string
+            "tipo_reembolso": self.tipo_reembolso,
+            "centro_custo": self.centro_custo,
+            "ordem_interna": self.ordem_interna,
+            "divisao": self.divisao,
+            "pep": self.pep,
+            "moeda": self.moeda,
+            "distanca_km": self.distanca_km,
+            "valor_km": self.valor_km,
+            "valor_faturado": float(self.valor_faturado),  # Garantindo que seja float
+            "despesa": float(self.despesa) if self.despesa else None,
+            "id_colaborador": self.id_colaborador,
+            "status": self.status
+        }
