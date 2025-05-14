@@ -5,7 +5,7 @@ from dotenv import load_dotenv #Carregamento das variaveis de ambiente nesse arq
 load_dotenv(".env")
 
 class Config():
-        SQLALCHEMY_DATABASE_URI = environ.get("URL_DATABASE_PROD") #puxa a variavel de ambiente e utiliza para a conexão
+        SQLALCHEMY_DATABASE_URI = environ.get("URL_DATABASE_DEV") #puxa a variavel de ambiente e utiliza para a conexão
         SQLALCHEMY =_TACK_MODIFICATIONS = False #Otimiza as quetis no banco de dados
 
         # +++ Configurações de e-mail +++

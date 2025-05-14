@@ -1,3 +1,4 @@
+
 from src.model import db
 from sqlalchemy import Column
 from sqlalchemy.types import Integer, String, DateTime
