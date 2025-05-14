@@ -8,6 +8,7 @@ class Colaborador(db.Model):
 #-----------------------------ATRIBUTOS--------------------
 # id INT AUTO_INCREMENT PRIMARY KEY
     id = Column(Integer, primary_key=True, autoincrement=True)
+    # nome VARCHAR(100)
     nome = Column(String(100))
     email = Column(String(100))
     senha = Column(String(255))
@@ -30,11 +31,11 @@ class Colaborador(db.Model):
                 'senha': self.senha
             }
     
-    def to_dict(self) -> dict:
+    def all_data(self) -> dict:
         return {
             'id': self.id,
             'nome': self.nome,
             'cargo': self.cargo,
-            'salario':str(self.salario),
+            'salario': self.salario,
             'email':self.email
         }
