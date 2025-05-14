@@ -36,6 +36,15 @@ def cadastrar_novo_colaborador():
     db.session.commit()
     return jsonify({'mensagem': 'Dado cadastrado com sucesso'}), 201
 
+<<<<<<< HEAD
+=======
+    # INSERT INTO tb_colaborador(nome, email, senha, cargo, salario) VALUES (VALOR1,VALOR2,VALOR3,VALOR4,VALOR5)
+    db.session.add(novo_colaborador)
+    db.session.commit() # EXECUTA A QUERY
+
+    return jsonify ({'mensagem': 'Dado cadastrado com sucesso'}), 201
+
+>>>>>>> main
 @bp_colaborador.route('/atualizar/<int:id_colaborador>', methods=['PUT'])
 def atualizar_dados_do_colaborador(id_colaborador):
     dados = request.get_json()
@@ -66,8 +75,20 @@ def login():
         db.select(Colaborador).where(Colaborador.email == email)
     ).scalar_one_or_none()
 
+<<<<<<< HEAD
     if not colaborador or not checar_senha(senha, colaborador.senha):
         return jsonify({'mensagem': 'Usuário ou senha incorretos'}), 401
+=======
+    if not colaborador:
+        return jsonify({'mensagem': 'Usuario não encontrado'}), 404
+    
+    colaborador = colaborador.to_dict()
+
+    if email == colaborador.get('email') and checar_senha(senha, colaborador.get('senha')):
+        return jsonify({'mensagem': "Login realizado com sucesso"}),200
+    else:
+        return jsonify({'mensagem': 'Usuario não encontrado'}), 400
+>>>>>>> main
 
     return jsonify({
         'mensagem': 'Login realizado com sucesso',

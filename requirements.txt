@@ -32,4 +32,9 @@ six==1.17.0
 SQLAlchemy==2.0.40
 typing_extensions==4.13.1
 Werkzeug==3.1.3
+<<<<<<< HEAD
 Flask-Mail>=0.9.1
+=======
+Flask-Mail>=0.9.1
+
+>>>>>>> main
