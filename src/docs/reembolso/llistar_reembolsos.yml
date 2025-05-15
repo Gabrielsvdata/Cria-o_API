@@ -1,0 +1,64 @@
+tags:
+  - Reembolso
+summary: Lista reembolsos
+description: Retorna todos os reembolsos, com filtros opcionais de status e número de prestação.
+parameters:
+  - in: query
+    name: status
+    type: string
+    description: Filtra por status (Ex: Em análise, Aprovado, Rejeitado)
+  - in: query
+    name: num_prestacao
+    type: integer
+    description: Filtra por número de prestação
+responses:
+  '200':
+    description: Lista de reembolsos retornada com sucesso.
+    schema:
+      type: array
+      items:
+        type: object
+        properties:
+          num_prestacao:
+            type: integer
+          colaborador:
+            type: string
+          empresa:
+            type: string
+          descricao:
+            type: string
+          data:
+            type: string
+            format: date-time
+          tipo_reembolso:
+            type: string
+          centro_custo:
+            type: string
+          ordem_interna:
+            type: string
+          divisao:
+            type: string
+          pep:
+            type: string
+          moeda:
+            type: string
+          distancia_km:
+            type: string
+          valor_km:
+            type: string
+          valor_faturado:
+            type: number
+          despesa:
+            type: number
+          id_colaborador:
+            type: integer
+          status:
+            type: string
+  '500':
+    description: Erro interno do servidor.
+    schema:
+      type: object
+      properties:
+        erro:
+          type: string
+          example: Descrição do erro interno

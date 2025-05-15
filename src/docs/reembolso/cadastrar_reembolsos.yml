@@ -1,0 +1,81 @@
+tags:
+  - Reembolso
+summary: Cria um novo reembolso
+description: Cria um novo registro de reembolso no sistema.
+parameters:
+  - in: body
+    name: corpo
+    required: true
+    schema:
+      type: object
+      required:
+        - colaborador
+        - empresa
+        - tipo_reembolso
+        - centro_custo
+        - valor_faturado
+        - id_colaborador
+      properties:
+        colaborador:
+          type: string
+          example: Gabriel Silvano Vieira
+        empresa:
+          type: string
+          example: Stone Pagamentos
+        descricao:
+          type: string
+          example: Despesa de viagem
+        tipo_reembolso:
+          type: string
+          example: Viagem
+        centro_custo:
+          type: string
+          example: TI
+        ordem_interna:
+          type: string
+          example: ORD12345
+        divisao:
+          type: string
+          example: Infraestrutura
+        pep:
+          type: string
+          example: PEP001
+        moeda:
+          type: string
+          example: BRL
+        distancia_km:
+          type: string
+          example: "120"
+        valor_km:
+          type: string
+          example: "1.10"
+        valor_faturado:
+          type: number
+          format: float
+          example: 132.00
+        despesa:
+          type: number
+          format: float
+          example: 50.00
+        id_colaborador:
+          type: integer
+          example: 42
+responses:
+  '201':
+    description: Reembolso criado com sucesso!
+    schema:
+      type: object
+      properties:
+        mensagem:
+          type: string
+          example: Reembolso criado com sucesso!
+        reembolso:
+          $ref: '#/components/schemas/Reembolso'
+  '400':
+    description: Erro ao criar reembolso. Verifique os dados informados.
+    schema:
+      type: object
+      properties:
+        erro:
+          type: string
+          example: Dados inválidos ou faltando campos obrigatórios.

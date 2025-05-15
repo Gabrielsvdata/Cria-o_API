@@ -2,45 +2,44 @@
 
 from flask import Flask
 from src.controler.colaborador_controller import bp_colaborador
-from src.controler.reembolso_controler import bp_reembolso  # <-- Blueprint do Reembolso adicionado
-from src.controler.auth_controler import bp_auth
+from src.controler.reembolso_controler import bp_reembolso
 from src.model import db
 from config import Config
 from flasgger import Swagger
 from flask_cors import CORS
-from src.extensions import db, mail
-from src.model.password_reset_model import PasswordReset
 
 swagger_config = {
     "headers": [],
     "specs": [
         {
-            "endpoint": "apispec", # <-- Da um nome de referencia para a documentacao
-            "route": "/apispec.json/", # <- Rota do arquivo JSON para a construção da documentação
-            "rule_filter": lambda rule: True, # <-- Todas as rotas/endpoints serão documentados
-            "model_filter": lambda tag: True, # <-- 
+            "endpoint": "apispec",           # Nome de referência para a documentação
+            "route": "/apispec.json/",      # Rota do JSON usado pelo Swagger UI
+            "rule_filter": lambda rule: True,# Todas as rotas serão documentadas
+            "model_filter": lambda tag: True,
         }
     ],
-    "static_url_path": "/flasgger_static", 
-    "swagger_ui": True, # <-- Ativa a interface do Swagger UI
-    "specs_route": "/apidocs/", # <-- Rota para acessar a interface do Swagger UI
+    "static_url_path": "/flasgger_static",
+    "swagger_ui": True,                  # Ativa o Swagger UI
+    "specs_route": "/apidocs/",          # Rota para acessar o Swagger UI
 }
 
-
 def create_app():
-    app = Flask(__name__) #-- INSTANCIA DO FLASK
-    app.register_blueprint(bp_colaborador)
-    app.register_blueprint(bp_reembolso)  # <-- Blueprint do Reembolso adicionado
+    app = Flask(__name__)               # instancia do Flask
+
+    # 1) Carrega a configuração antes de inicializar extensões
     app.config.from_object(Config)
-    app.register_blueprint(bp_auth)
 
+    # 2) Inicializa extensões que usam a config
+    db.init_app(app)                    # inicia a conexão com o banco
+    CORS(app, origins=["*"])            # habilita CORS para todas as origens
+    Swagger(app, config=swagger_config) # configura o Swagger
 
-    db.init_app(app) #inicia a conexaõ com o banco de dados 
-    mail.init_app(app)
-    CORS(app, origins=["*"]) #-- HABILITA O CORS PARA TODAS AS ORIGENS
-    Swagger(app, config=swagger_config)
+    # 3) Registra blueprints (mantendo a estrutura original)
+    app.register_blueprint(bp_colaborador)
+    app.register_blueprint(bp_reembolso)
 
-    with app.app_context(): # Se as tabelas não existem, crie
+    # 4) Cria tabelas caso ainda não existam
+    with app.app_context():
         db.create_all()
 
     return app

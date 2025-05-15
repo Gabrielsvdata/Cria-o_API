@@ -1,40 +1,92 @@
-tags:
-    - Colaborador
-description: Endpoint para cadastrar um novo colaborador
+paths:
+  /colaboradores:
+    post:
+      tags:
+        - Colaborador
+      summary: Cadastra um novo colaborador
+      description: Endpoint para cadastrar um novo colaborador no sistema.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ColaboradorInput'
+      responses:
+        '201':
+          description: Colaborador cadastrado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Colaborador'
+        '400':
+          description: Erro ao cadastrar colaborador. Verifique os dados informados.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Erro de autenticação. Verifique suas credenciais.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - bearerAuth: []
 
-parameters:
-    - in: body
-      name: corpo
-      required: true
+components:
+  schemas:
+    ColaboradorInput:
+      type: object
+      required:
+        - nome
+        - email
+        - senha
+        - cargo
+        - salario
+      properties:
+        nome:
+          type: string
+          example: Gabriel Silvano Vieira
+        email:
+          type: string
+          format: email
+          example: gabriel@email.com
+        senha:
+          type: string
+          format: password
+          example: 12345678
+        cargo:
+          type: string
+          example: QA
+        salario:
+          type: number
+          format: float
+          example: 5000.00
 
-      schema:
-        type: object
-        properties:
-            nome:
-                type: string
-                example: Gabriel Silvano Vieira
-            email:
-                type: string
-                example: gabriel@email.com
-            senha:
-                type: string
-                example: 12345678
-            cargo:
-                type: string
-                example: QA
-            salario:
-                type: number
-                example: 5000.00
-        required:
-            - nome
-            - email
-            - senha
-            - cargo
-            - salario
-responses:
-            201:
-                description: Colaborador cadastrado com sucesso
-            400:
-                example: Erro ao cadastrar colaborador. Verifique os dados informados.
-            401:
-                example: Erro de autenticação. Verifique suas credenciais.    
+    Colaborador:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+        nome:
+          type: string
+        email:
+          type: string
+        cargo:
+          type: string
+        salario:
+          type: number
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Mensagem de erro detalhada.
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

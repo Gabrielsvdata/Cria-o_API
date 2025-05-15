@@ -1,0 +1,37 @@
+tags:
+  - Reembolso
+summary: Aprova um reembolso
+description: Atualiza o status de um reembolso para “Aprovado”.
+parameters:
+  - in: path
+    name: num_prestacao
+    required: true
+    type: integer
+    description: Número de prestação do reembolso a ser aprovado
+responses:
+  '200':
+    description: Reembolso aprovado com sucesso!
+    schema:
+      type: object
+      properties:
+        mensagem:
+          type: string
+          example: Reembolso aprovado com sucesso!
+        reembolso:
+          $ref: '#/components/schemas/Reembolso'
+  '404':
+    description: Reembolso não encontrado.
+    schema:
+      type: object
+      properties:
+        erro:
+          type: string
+          example: Reembolso não encontrado.
+  '500':
+    description: Erro interno ao aprovar reembolso.
+    schema:
+      type: object
+      properties:
+        erro:
+          type: string
+          example: Falha ao atualizar o status do reembolso.

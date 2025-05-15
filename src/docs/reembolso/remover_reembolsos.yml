@@ -1,0 +1,37 @@
+tags:
+  - Reembolso
+summary: Rejeita um reembolso
+description: Atualiza o status de um reembolso para “Rejeitado”.
+parameters:
+  - in: path
+    name: num_prestacao
+    required: true
+    type: integer
+    description: Número de prestação do reembolso a ser rejeitado
+responses:
+  '200':
+    description: Reembolso rejeitado com sucesso!
+    schema:
+      type: object
+      properties:
+        mensagem:
+          type: string
+          example: Reembolso rejeitado com sucesso!
+        reembolso:
+          $ref: '#/components/schemas/Reembolso'
+  '404':
+    description: Reembolso não encontrado.
+    schema:
+      type: object
+      properties:
+        erro:
+          type: string
+          example: Reembolso não encontrado.
+  '500':
+    description: Erro interno ao rejeitar reembolso.
+    schema:
+      type: object
+      properties:
+        erro:
+          type: string
+          example: Falha ao atualizar o status do reembolso.
