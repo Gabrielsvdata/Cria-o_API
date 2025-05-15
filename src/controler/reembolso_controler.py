@@ -135,3 +135,12 @@ def remover_reembolso(num_prestacao):
     except Exception as e:
         db.session.rollback()
         return jsonify({'erro': str(e)}), 500
+    
+@bp_reembolso.route('/<int:num_prestacao>/enviar-analise', methods=['PATCH'])
+def enviar_para_analise(num_prestacao):
+    r = Reembolso.query.get(num_prestacao)
+    if not r:
+        return jsonify({'erro': 'Reembolso não encontrado.'}), 404
+    r.status = 'Em análise'
+    db.session.commit()
+    return jsonify({'mensagem': 'Enviado para análise!', 'reembolso': r.to_dict()}), 200
