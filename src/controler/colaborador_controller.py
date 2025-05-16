@@ -79,7 +79,7 @@ def login():
 
         colaborador = db.session.execute(
             db.select(Colaborador).where(Colaborador.email == email)
-        ).scalar_one_or_none()
+        ).scalar()
 
         if not colaborador or not checar_senha(senha, colaborador.senha):
             return jsonify({'mensagem': 'Usuário ou senha incorretos'}), 401
