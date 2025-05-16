@@ -70,20 +70,23 @@ def remover_colaborador(id_colaborador):
 def login():
     if request.method == 'OPTIONS':
         return '', 200
-    dados = request.get_json()
-    email = dados.get('email')
-    senha = dados.get('senha')
-    if not email or not senha:
-        return jsonify({'mensagem': 'Todos os dados precisam ser preenchidos'}), 400
+    dados = request.get_json() 
+    try:
+        email = dados.get('email')
+        senha = dados.get('senha')
+        if not email or not senha:
+            return jsonify({'mensagem': 'Todos os dados precisam ser preenchidos'}), 400
 
-    colaborador = db.session.execute(
-        db.select(Colaborador).where(Colaborador.email == email)
-    ).scalar_one_or_none()
+        colaborador = db.session.execute(
+            db.select(Colaborador).where(Colaborador.email == email)
+        ).scalar_one_or_none()
 
-    if not colaborador or not checar_senha(senha, colaborador.senha):
-        return jsonify({'mensagem': 'Usuário ou senha incorretos'}), 401
+        if not colaborador or not checar_senha(senha, colaborador.senha):
+            return jsonify({'mensagem': 'Usuário ou senha incorretos'}), 401
 
-    return jsonify({
-        'mensagem': 'Login realizado com sucesso',
-        'usuario':  colaborador.all_data()
-    }), 200
+        return jsonify({
+            'mensagem': 'Login realizado com sucesso',
+            'usuario':  colaborador.all_data()
+        }), 200
+    except Exception as e:
+        return jsonify({'mensagem': 'Erro ao realizar login', 'erro': str(e)}), 500
