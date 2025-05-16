@@ -82,7 +82,7 @@ def login():
         ).scalar()
 
 
-        if email == colaborador['email'] and checar_senha(senha, colaborador['senha']):
+        if email == colaborador.email and checar_senha(senha, colaborador.senha):
          return jsonify({'mensagem': 'Login realizado com sucesso!'}), 200
         else:
            return jsonify({'mensagem': 'Credenciais inválidas!'}), 400
