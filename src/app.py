@@ -31,7 +31,7 @@ def create_app():
 
     # 2) Inicializa extensões que usam a config
     db.init_app(app)                    # inicia a conexão com o banco
-    CORS(app, origins=["*"])            # habilita CORS para todas as origens
+    CORS(app)            # habilita CORS para todas as origens
     Swagger(app, config=swagger_config) # configura o Swagger
 
     # 3) Registra blueprints (mantendo a estrutura original)

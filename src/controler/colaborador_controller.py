@@ -66,7 +66,7 @@ def remover_colaborador(id_colaborador):
     db.session.commit()
     return jsonify({'mensagem': 'Colaborador removido com sucesso'}), 200
 
-@bp_colaborador.route('/login', methods=['OPTIONS', 'POST'])
+@bp_colaborador.route('/login', methods=['POST'])
 def login():
     if request.method == 'OPTIONS':
         return '', 200
