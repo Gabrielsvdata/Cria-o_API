@@ -81,12 +81,20 @@ def login():
             db.select(Colaborador).where(Colaborador.email == email)
         ).scalar()
 
-        if not colaborador or not checar_senha(senha, colaborador.senha):
-            return jsonify({'mensagem': 'Usuário ou senha incorretos'}), 401
 
-        return jsonify({
-            'mensagem': 'Login realizado com sucesso',
-            'usuario':  colaborador.all_data()
-        }), 200
+        if email == colaborador['email'] and checar_senha(senha, colaborador['senha']):
+         return jsonify({'mensagem': 'Login realizado com sucesso!'}), 200
+        else:
+           return jsonify({'mensagem': 'Credenciais inválidas!'}), 400
+
+        # if not colaborador or not checar_senha(senha, colaborador.senha):
+        #     return jsonify({'mensagem': 'Usuário ou senha incorretos'}), 401
+
+        # return jsonify({
+        #     'mensagem': 'Login realizado com sucesso',
+        #     'usuario':  colaborador.all_data()
+        # }), 200
+
+        
     except Exception as e:
         return jsonify({'mensagem': 'Erro ao realizar login', 'erro': str(e)}), 500
