@@ -8,8 +8,6 @@ class Config():
         SQLALCHEMY_DATABASE_URI = environ.get("URL_DATABASE_PROD") #puxa a variavel de ambiente e utiliza para a conexão
         SQLALCHEMY =_TACK_MODIFICATIONS = False #Otimiza as quetis no banco de dados
 
-            # Carrega a chave do JWT também via variável de ambiente
-        JWT_SECRET_KEY = environ.get("JWT_SECRET_KEY", "chave-de-desenvolvimento")
         # +++ Configurações de e-mail +++
         MAIL_SERVER   = environ.get("MAIL_SERVER", "smtp.gmail.com")
         MAIL_PORT     = int(environ.get("MAIL_PORT", 587))

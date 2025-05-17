@@ -54,7 +54,7 @@ class Reembolso(db.Model):
         self.id_colaborador = id_colaborador
         self.status         = status
 
-    def to_public_dict(self): 
+    def to_dict(self):
         return {
             "num_prestacao":   self.num_prestacao,
             "colaborador":     self.colaborador,

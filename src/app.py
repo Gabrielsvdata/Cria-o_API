@@ -1,7 +1,6 @@
 # RESPONSÁVEL PELA APLICAÇÃO 
 
 from flask import Flask
-from flask_jwt_extended import JWTManager # Importa o JWTManager para autenticação
 from src.controler.colaborador_controller import bp_colaborador
 from src.controler.reembolso_controler import bp_reembolso
 from src.model import db
@@ -25,10 +24,7 @@ swagger_config = {
 }
 
 def create_app():
-    app = Flask(__name__)   
-    
-    app.config['JWT_SECRET_KEY'] = '1234'
-    JWTManager(app)            # instancia do Flask
+    app = Flask(__name__)               # instancia do Flask
 
     # 1) Carrega a configuração antes de inicializar extensões
     app.config.from_object(Config)

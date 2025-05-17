@@ -25,20 +25,11 @@ class Colaborador(db.Model):
         self.cargo = cargo
         self.salario = salario
 
-    def to_dict(self) -> dict: 
-        # ALTERAÇÃO DO PARA NÃO BUSCAR A SENHA TESTE 
+    def to_dict(self) -> dict:
             return {
                 'email': self.email,
                 'senha': self.senha
             }
-    
-    def to_public_dict(self):
-        return {
-            "id": self.id,
-            "nome": self.nome,
-            "email": self.email,
-            "cargo": self.cargo
-        }
     
     def all_data(self) -> dict:
         return {
