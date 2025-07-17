@@ -1,12 +1,12 @@
-# src/controler/reembolso_controller.py
-
 from flasgger import swag_from
 from flask import Blueprint, request, jsonify
 from src.model import db
 from src.model.reembolso_model import Reembolso
+from src.model.comprovante_model import Comprovante  # Importação para validar comprovantes
 
 bp_reembolso = Blueprint('reembolso', __name__, url_prefix='/reembolsos')
 
+# 🔍 LISTA todos os reembolsos com filtro opcional por status ou num_prestacao
 @bp_reembolso.route('/', methods=['GET'])
 @swag_from('../docs/reembolso/listar_reembolsos.yml')
 def listar_reembolsos():
@@ -25,6 +25,7 @@ def listar_reembolsos():
     except Exception as e:
         return jsonify({'erro': str(e)}), 500
 
+# 🔍 BUSCA um reembolso específico pelo número da prestação
 @bp_reembolso.route('/<int:num_prestacao>', methods=['GET'])
 def buscar_reembolso(num_prestacao):
     r = Reembolso.query.get(num_prestacao)
@@ -32,11 +33,21 @@ def buscar_reembolso(num_prestacao):
         return jsonify({'erro': 'Reembolso não encontrado.'}), 404
     return jsonify(r.to_dict()), 200
 
+# 📝 CRIA um novo reembolso e associa um comprovante se fornecido
 @bp_reembolso.route('/new', methods=['POST'])
 @swag_from('../docs/reembolso/cadastrar_reembolso.yml')
 def criar_reembolso():
     try:
         d = request.get_json()
+
+        # Validação: se o comprovante_id foi enviado, verificar se ele existe
+        comprovante_id = d.get('comprovante_id')
+        if comprovante_id:
+            comprovante = Comprovante.query.get(comprovante_id)
+            if not comprovante:
+                return jsonify({'erro': 'Comprovante não encontrado.'}), 400
+
+        # Criação do objeto Reembolso com ou sem comprovante
         novo = Reembolso(
             colaborador    = d['colaborador'],
             empresa        = d['empresa'],
@@ -51,7 +62,8 @@ def criar_reembolso():
             valor_km       = d.get('valor_km'),
             valor_faturado = d['valor_faturado'],
             despesa        = d.get('despesa', 0),
-            id_colaborador = d['id_colaborador']
+            id_colaborador = d['id_colaborador'],
+            comprovante_id = comprovante_id  # Associação direta
         )
         db.session.add(novo)
         db.session.commit()
@@ -63,6 +75,7 @@ def criar_reembolso():
         db.session.rollback()
         return jsonify({'erro': str(e)}), 400
 
+# ✅ APROVA um reembolso e atualiza seu status
 @bp_reembolso.route('/<int:num_prestacao>/aprovar', methods=['PATCH'])
 def aprovar_reembolso(num_prestacao):
     try:
@@ -79,6 +92,7 @@ def aprovar_reembolso(num_prestacao):
         db.session.rollback()
         return jsonify({'erro': str(e)}), 500
 
+# ❌ REJEITA um reembolso e atualiza seu status
 @bp_reembolso.route('/<int:num_prestacao>/rejeitar', methods=['PATCH'])
 def rejeitar_reembolso(num_prestacao):
     try:
@@ -95,6 +109,7 @@ def rejeitar_reembolso(num_prestacao):
         db.session.rollback()
         return jsonify({'erro': str(e)}), 500
 
+# ✏️ ATUALIZA um reembolso existente, incluindo o comprovante se for alterado
 @bp_reembolso.route('/<int:num_prestacao>', methods=['PUT'])
 @swag_from('../docs/reembolso/atualizar_reembolso.yml')
 def atualizar_reembolso(num_prestacao):
@@ -104,6 +119,15 @@ def atualizar_reembolso(num_prestacao):
         if not r:
             return jsonify({'erro': 'Reembolso não encontrado.'}), 404
 
+        # Atualiza comprovante se fornecido
+        novo_comprovante_id = dados.get('comprovante_id')
+        if novo_comprovante_id:
+            comprovante = Comprovante.query.get(novo_comprovante_id)
+            if not comprovante:
+                return jsonify({'erro': 'Comprovante informado não existe.'}), 400
+            r.comprovante_id = novo_comprovante_id
+
+        # Atualiza os demais campos
         for campo in (
             'colaborador', 'empresa', 'descricao', 'tipo_reembolso',
             'centro_custo', 'ordem_interna', 'divisao', 'pep',
@@ -122,6 +146,7 @@ def atualizar_reembolso(num_prestacao):
         db.session.rollback()
         return jsonify({'erro': str(e)}), 400
 
+# 🗑️ REMOVE um reembolso existente
 @bp_reembolso.route('/<int:num_prestacao>', methods=['DELETE'])
 @swag_from('../docs/reembolso/remover_reembolso.yml')
 def remover_reembolso(num_prestacao):
@@ -135,7 +160,8 @@ def remover_reembolso(num_prestacao):
     except Exception as e:
         db.session.rollback()
         return jsonify({'erro': str(e)}), 500
-    
+
+# 🔄 Envia um reembolso para status de "Em análise"
 @bp_reembolso.route('/<int:num_prestacao>/enviar-analise', methods=['PATCH'])
 def enviar_para_analise(num_prestacao):
     r = Reembolso.query.get(num_prestacao)

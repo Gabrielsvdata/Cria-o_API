@@ -22,6 +22,9 @@ class Reembolso(db.Model):
     id_colaborador  = Column(Integer, ForeignKey('colaborador.id'))
     status          = Column(String(25), default='Em análise')
 
+    # ✅ Relacionamento com comprovante
+    comprovante_id = Column(Integer, ForeignKey('comprovantes.id'))
+
     def __init__(self,
                  colaborador,
                  empresa,
@@ -37,22 +40,24 @@ class Reembolso(db.Model):
                  valor_faturado=0,
                  despesa=0,
                  id_colaborador=None,
-                 status='Em análise'):
-        self.colaborador    = colaborador
-        self.empresa        = empresa
-        self.descricao      = descricao
-        self.tipo_reembolso = tipo_reembolso
-        self.centro_custo   = centro_custo
-        self.ordem_interna  = ordem_interna
-        self.divisao        = divisao
-        self.pep            = pep
-        self.moeda          = moeda
-        self.distancia_km   = distancia_km
-        self.valor_km       = valor_km
-        self.valor_faturado = valor_faturado
-        self.despesa        = despesa
-        self.id_colaborador = id_colaborador
-        self.status         = status
+                 status='Em análise',
+                 comprovante_id=None):
+        self.colaborador     = colaborador
+        self.empresa         = empresa
+        self.descricao       = descricao
+        self.tipo_reembolso  = tipo_reembolso
+        self.centro_custo    = centro_custo
+        self.ordem_interna   = ordem_interna
+        self.divisao         = divisao
+        self.pep             = pep
+        self.moeda           = moeda
+        self.distancia_km    = distancia_km
+        self.valor_km        = valor_km
+        self.valor_faturado  = valor_faturado
+        self.despesa         = despesa
+        self.id_colaborador  = id_colaborador
+        self.status          = status
+        self.comprovante_id  = comprovante_id  # ✅ Atribuição do comprovante
 
     def to_dict(self):
         return {
@@ -72,5 +77,6 @@ class Reembolso(db.Model):
             "valor_faturado":  float(self.valor_faturado),
             "despesa":         float(self.despesa) if self.despesa is not None else None,
             "id_colaborador":  self.id_colaborador,
-            "status":          self.status
+            "status":          self.status,
+            "comprovante_id":  self.comprovante_id  # ✅ Retorno para o front
         }
