@@ -1,0 +1,14 @@
+tags:
+  - Reembolso
+summary: Remover reembolso
+description: Remove um reembolso existente
+parameters:
+  - name: num_prestacao
+    in: path
+    required: true
+    type: integer
+responses:
+  200:
+    description: Reembolso removido com sucesso
+  404:
+    description: Reembolso não encontrado

@@ -1,41 +1,31 @@
+summary: Atualiza os dados de um colaborador existente
 tags:
-  - Colaborador
-description: Endpoint para atualizar dados de um colaborador existente
+  - Colaboradores
 parameters:
   - in: path
     name: id_colaborador
-    description: ID do colaborador a ser atualizado
     required: true
     type: integer
   - in: body
-    name: corpo
-    description: Campos a serem atualizados
+    name: body
     required: true
     schema:
       type: object
       properties:
         nome:
           type: string
-          example: Novo Nome
         email:
           type: string
-          example: novo@email.com
         senha:
           type: string
-          example: novaSenha123
         cargo:
           type: string
-          example: Desenvolvedor
         salario:
           type: number
-          format: float
-          example: 6000.00
 responses:
   200:
     description: Dados do colaborador atualizados com sucesso
   400:
-    example: Erro ao atualizar colaborador. Verifique os dados informados.
+    description: Erro de validação
   404:
-    example: Colaborador não encontrado.
-  401:
-    example: Erro de autenticação. Verifique suas credenciais.
+    description: Colaborador não encontrado

@@ -1,16 +1,13 @@
+summary: Remove um colaborador pelo ID
 tags:
-  - Colaborador
-description: Endpoint para remover um colaborador existente
+  - Colaboradores
 parameters:
   - in: path
     name: id_colaborador
-    description: ID do colaborador a ser removido
     required: true
     type: integer
 responses:
   200:
     description: Colaborador removido com sucesso
   404:
-    example: Colaborador não encontrado.
-  401:
-    example: Erro de autenticação. Verifique suas credenciais.
+    description: Colaborador não encontrado

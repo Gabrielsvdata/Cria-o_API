@@ -1,0 +1,25 @@
+tags:
+  - Reembolso
+summary: Atualizar reembolso
+description: Atualiza os dados de um reembolso existente
+parameters:
+  - name: num_prestacao
+    in: path
+    required: true
+    type: integer
+  - in: body
+    required: true
+    schema:
+      type: object
+      properties:
+        status:
+          type: string
+          example: Aprovado
+        descricao:
+          type: string
+          example: Viagem para evento
+responses:
+  200:
+    description: Reembolso atualizado
+  404:
+    description: Reembolso não encontrado

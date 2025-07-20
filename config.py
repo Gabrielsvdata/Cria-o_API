@@ -1,15 +1,16 @@
-# armazenar as configurações do ambiente de desenvlvimento
-from os import environ # Arquivo tem acesso as variaveis de ambiente
-from dotenv import load_dotenv #Carregamento das variaveis de ambiente nesse arquivo
+# config.py
 
+from os import environ
+from dotenv import load_dotenv
+
+# Carrega as variáveis de ambiente do arquivo .env
 load_dotenv(".env")
 
 class Config():
-         # TESTE 21/05/2020
-         SQLALCHEMY_DATABASE_URI = environ.get("URL_DATABASE_DEV") #puxa a variavel de ambiente e utiliza para a conexão
-         SQLALCHEMY =_TACK_MODIFICATIONS = False #Otimiza as quetis no banco de dados
+    # Ambiente de desenvolvimento
+    SQLALCHEMY_DATABASE_URI = environ.get("URL_DATABASE_DEV")  # Usa a URL do banco de dados do .env
+    SQLALCHEMY_TRACK_MODIFICATIONS = False  # Desativa o rastreamento de modificações (melhor performance)
 
-
-        # ORIGINAL
-        # SQLALCHEMY_DATABASE_URI = environ.get("URL_DATABASE_PROD") #puxa a variavel de ambiente e utiliza para a conexão
-        # SQLALCHEMY =_TACK_MODIFICATIONS = False #Otimiza as quetis no banco de dados
+    # Ambiente de produção (comentado)
+    # SQLALCHEMY_DATABASE_URI = environ.get("URL_DATABASE_PROD")
+    # SQLALCHEMY_TRACK_MODIFICATIONS = False

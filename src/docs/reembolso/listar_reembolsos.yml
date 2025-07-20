@@ -1,0 +1,18 @@
+tags:
+  - Reembolso
+summary: Lista reembolsos
+description: Retorna todos os reembolsos com filtros opcionais.
+parameters:
+  - name: status
+    in: query
+    type: string
+    required: false
+    description: Filtrar por status (Ex: Aprovado, Rejeitado)
+  - name: num_prestacao
+    in: query
+    type: integer
+    required: false
+    description: Número da prestação específica
+responses:
+  200:
+    description: Lista de reembolsos retornada com sucesso

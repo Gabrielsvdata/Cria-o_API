@@ -1,22 +1,31 @@
-FROM python:3.12-alpine
+# Usa imagem base com Python
+FROM python:3.11-slim
 
-# Define o diretório de trabalho no container
+# Instala bibliotecas do sistema necessárias para o mysqlclient
+RUN apt-get update && apt-get install -y \
+    default-libmysqlclient-dev \
+    build-essential \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+# Define diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copia o arquivo de dependências para o diretório de trabalho
-# Esta etapa é separada para aproveitar o cache do Docker. As dependências só
-# serão reinstaladas se o arquivo requirements.txt mudar.
+# Copia as dependências primeiro (aproveita cache)
 COPY requirements.txt .
 
-# Instala as dependências
+# Instala as dependências do projeto
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copia o restante do código da aplicação para o diretório de trabalho
+# Copia o restante do código da aplicação
 COPY . .
 
-# Expõe a porta que a aplicação irá rodar
-EXPOSE 8000
+# Define a variável de ambiente para o Flask
+ENV FLASK_APP=run.py
+ENV FLASK_ENV=development
 
-# Comando para iniciar a aplicação usando Uvicorn
-# O host 0.0.0.0 torna a aplicação acessível de fora do container
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Expõe a porta usada pela aplicação Flask
+EXPOSE 5000
+
+# Comando que inicia a aplicação Flask
+CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]

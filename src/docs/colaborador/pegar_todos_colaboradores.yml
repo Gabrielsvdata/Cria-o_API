@@ -1,0 +1,17 @@
+summary: Lista todos os colaboradores
+tags:
+  - Colaboradores
+responses:
+  200:
+    description: Lista de colaboradores retornada com sucesso
+    schema:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          nome:
+            type: string
+          email:
+            type: string
