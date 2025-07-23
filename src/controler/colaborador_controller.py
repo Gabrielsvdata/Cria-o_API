@@ -6,21 +6,17 @@ from flasgger import swag_from
 import os
 
 bp_colaborador = Blueprint('colaborador', __name__, url_prefix='/colaborador')
-
 DOCS_BASE = os.path.join(os.path.dirname(__file__), '../../docs/colaborador')
 
-@bp_colaborador.route('/todos-colaboradores', methods=['GET'])
-@swag_from(os.path.join(DOCS_BASE, 'pegar_todos_colaboradores.yml'))
-def pegar_dados_todos_colaboradores():
-    colaboradores = db.session.execute(db.select(Colaborador)).scalars().all()
-    resultado = [col.all_data() for col in colaboradores]
-    return jsonify(resultado), 200
-
+# -------------------------------
+# CREATE - Cadastrar colaborador
+# -------------------------------
 @bp_colaborador.route('/cadastrar', methods=['OPTIONS', 'POST'])
 @swag_from(os.path.join(DOCS_BASE, 'cadastrar_controller.yml'))
 def cadastrar_novo_colaborador():
     if request.method == 'OPTIONS':
         return '', 200
+
     dados = request.get_json()
     if not dados:
         return jsonify({'mensagem': 'Payload da requisição está vazio ou não é JSON válido.'}), 400
@@ -48,6 +44,19 @@ def cadastrar_novo_colaborador():
         current_app.logger.error(f"Erro ao cadastrar colaborador: {str(e)}", exc_info=True)
         return jsonify({'mensagem': 'Erro interno ao cadastrar. Tente novamente mais tarde.'}), 500
 
+# -------------------------------
+# READ - Listar todos os colaboradores
+# -------------------------------
+@bp_colaborador.route('/todos-colaboradores', methods=['GET'])
+@swag_from(os.path.join(DOCS_BASE, 'pegar_todos_colaboradores.yml'))
+def pegar_dados_todos_colaboradores():
+    colaboradores = db.session.execute(db.select(Colaborador)).scalars().all()
+    resultado = [col.all_data() for col in colaboradores]
+    return jsonify(resultado), 200
+
+# -------------------------------
+# UPDATE - Atualizar colaborador
+# -------------------------------
 @bp_colaborador.route('/atualizar/<int:id_colaborador>', methods=['OPTIONS', 'PUT'])
 @swag_from(os.path.join(DOCS_BASE, 'atualizar_controller.yml'))
 def atualizar_dados_do_colaborador(id_colaborador):
@@ -67,6 +76,7 @@ def atualizar_dados_do_colaborador(id_colaborador):
 
     try:
         campos_permitidos_para_atualizacao = {}
+
         if email_para_verificacao and nova_senha:
             if email_para_verificacao.lower() != colaborador.email.lower():
                 return jsonify({'mensagem': 'O email fornecido não corresponde ao crachá informado.'}), 400
@@ -82,8 +92,6 @@ def atualizar_dados_do_colaborador(id_colaborador):
         for campo, valor in campos_permitidos_para_atualizacao.items():
             if campo == 'senha':
                 setattr(colaborador, campo, hash_senha(valor))
-            elif campo == 'email' and (email_para_verificacao and nova_senha):
-                pass
             else:
                 setattr(colaborador, campo, valor)
 
@@ -94,11 +102,15 @@ def atualizar_dados_do_colaborador(id_colaborador):
         current_app.logger.error(f"Erro ao atualizar dados do colaborador id {id_colaborador}: {str(e)}", exc_info=True)
         return jsonify({'mensagem': 'Erro interno ao atualizar dados.'}), 500
 
+# -------------------------------
+# DELETE - Remover colaborador
+# -------------------------------
 @bp_colaborador.route('/remover/<int:id_colaborador>', methods=['OPTIONS', 'DELETE'])
 @swag_from(os.path.join(DOCS_BASE, 'remover_controller.yml'))
 def remover_colaborador(id_colaborador):
     if request.method == 'OPTIONS':
         return '', 200
+
     colaborador = db.session.get(Colaborador, id_colaborador)
     if not colaborador:
         return jsonify({'mensagem': 'Colaborador não encontrado'}), 404
@@ -107,6 +119,9 @@ def remover_colaborador(id_colaborador):
     db.session.commit()
     return jsonify({'mensagem': 'Colaborador removido com sucesso'}), 200
 
+# -------------------------------
+# EXTRA - Login de colaborador
+# -------------------------------
 @bp_colaborador.route('/login', methods=['POST'])
 def login():
     dados_requisicao = request.get_json()

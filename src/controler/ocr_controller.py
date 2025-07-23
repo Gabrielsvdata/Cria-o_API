@@ -1,13 +1,17 @@
 from flask import Blueprint, request, jsonify
 from src.utils.ocr_reader import extrair_texto_imagem
-import os, uuid
 from src.model.comprovante_model import Comprovante
 from src.model import db
+import os, uuid
 
-ocr_bp = Blueprint("ocr_bp", __name__)
+# Blueprint com prefixo padrão
+ocr_bp = Blueprint("ocr_bp", __name__, url_prefix='/ocr')
 
-# 🔽 Upload e OCR do comprovante
-@ocr_bp.route("/ocr", methods=["POST"])
+
+# -------------------------------
+# CREATE - Upload e extração OCR
+# -------------------------------
+@ocr_bp.route("/", methods=["POST"])
 def ocr():
     if "file" not in request.files:
         return jsonify({"erro": "Arquivo não encontrado"}), 400
@@ -22,12 +26,13 @@ def ocr():
     caminho_temporario = os.path.join("temp", nome_arquivo)
 
     try:
+        # Salva o arquivo temporariamente
         file.save(caminho_temporario)
 
-        # 🔍 Extração de texto via OCR
+        # Extrai texto da imagem
         texto = extrair_texto_imagem(caminho_temporario)
 
-        # 💾 Salvando no banco
+        # Salva no banco de dados
         comprovante = Comprovante(nome_arquivo=nome_arquivo, texto_extraido=texto)
         db.session.add(comprovante)
         db.session.commit()
@@ -40,6 +45,7 @@ def ocr():
         }), 201
 
     except Exception as e:
+        db.session.rollback()
         return jsonify({"erro": f"Erro ao processar imagem: {str(e)}"}), 500
 
     finally:
@@ -47,8 +53,10 @@ def ocr():
             os.remove(caminho_temporario)
 
 
-# 🔽 Listar todos os comprovantes OCR
-@ocr_bp.route("/ocr", methods=["GET"])
+# -------------------------------
+# READ - Listar comprovantes
+# -------------------------------
+@ocr_bp.route("/", methods=["GET"])
 def listar_ocr():
     comprovantes = Comprovante.query.order_by(Comprovante.data_criacao.desc()).all()
     resultados = [
@@ -63,8 +71,10 @@ def listar_ocr():
     return jsonify(resultados), 200
 
 
-# 🔽 Obter comprovante individual por ID
-@ocr_bp.route("/ocr/<int:id>", methods=["GET"])
+# -------------------------------
+# READ - Obter um comprovante
+# -------------------------------
+@ocr_bp.route("/<int:id>", methods=["GET"])
 def obter_ocr(id):
     comprovante = Comprovante.query.get(id)
     if not comprovante:
