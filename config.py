@@ -14,3 +14,6 @@ class Config():
     # Ambiente de produção (comentado)
     # SQLALCHEMY_DATABASE_URI = environ.get("URL_DATABASE_PROD")
     # SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+
+#DEFINIR MAIS DE UM CONFIG 
